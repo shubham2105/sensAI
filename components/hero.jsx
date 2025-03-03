@@ -1,9 +1,26 @@
-import React from "react";
+"use client";
+import React, { useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import Image from "next/image";
 
 const HeroSection = () => {
+  const ImageRef = useRef(null);
+  useEffect(() => {
+    const imageElement = ImageRef.current;
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const scrollThreshold = 100;
+
+      if (scrollPosition > scrollThreshold) {
+        imageElement.classList.add("scrolled");
+      } else {
+        imageElement.classList.remove("scrolled");
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+  }, []);
   return (
     <section className="w-full pt-36 md:pt-48 pb-10">
       <div className="space-y-6 text-center">
@@ -22,20 +39,20 @@ const HeroSection = () => {
         {/* Buttons */}
         <div>
           <Link href="/dashboard">
-            <Button size="lg" className="px-8">
+            <Button size="lg" className="px-8" variant="outline">
               Get Started
             </Button>
           </Link>
         </div>
         {/* Banner Image */}
-        <div>
-          <div>
+        <div className="hero-image-wrapper mt-5 md:mt-0">
+          <div ref={ImageRef} className="hero-image">
             <Image
               src={"/banner.jpeg"}
               width={1280}
               height={720}
               alt="Banner SensAI"
-              className="rounde-lg shadow-2xl border mx-auto"
+              className="rounded-lg shadow-2xl border mx-auto"
               priority
             />
           </div>
