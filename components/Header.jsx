@@ -26,8 +26,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { CheckUser } from "@/lib/checkUser";
 
-const Header = () => {
+export default async function Header() {
+  await CheckUser;
   return (
     <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50 supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -109,5 +111,4 @@ const Header = () => {
       </nav>
     </header>
   );
-};
-export default Header;
+}
