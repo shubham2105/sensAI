@@ -25,10 +25,18 @@ import { Input } from "@/components/ui/input";
 import { number } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import useFetch from "@/hooks/use-fetch";
+import { updateUser } from "@/actions/user";
 
 const OnboardingForm = ({ industries }) => {
   const [SelectIndustry, setSelectIndustry] = useState(null);
   const router = useRouter();
+
+  const {
+    loading: updateLoading,
+    fn: updateUserFn,
+    data: updateResult,
+  } = useFetch(updateUser);
 
   const {
     register,
@@ -39,7 +47,11 @@ const OnboardingForm = ({ industries }) => {
   } = useForm({
     resolver: zodResolver(onboardingSchema),
   });
-  const onSubmit = async (values) => {};
+  const onSubmit = async (values) => {
+    try {
+      console.log(values);
+    } catch (error) {}
+  };
 
   const watchIndustry = watch("industry");
   return (
