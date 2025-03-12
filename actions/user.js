@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { use } from "react";
 
 export async function updateUser(data) {
@@ -23,22 +24,22 @@ export async function updateUser(data) {
     const result = await db.$transaction(
       async (tx) => {
         // 1st step: find it the industry exists
-        let industryInsight = await tx.industryInsights.findUnique({
+        let industryInsight = await tx.industryInsight.findUnique({
           where: {
             industry: data.industry,
           },
         });
         // 2nd step: if industry does not exist, create it with default values - will replace it with AI later
         if (!industryInsight) {
-          industryInsight = await tx.industryInsights.create({
+          industryInsight = await tx.industryInsight.create({
             data: {
               industry: data.industry,
               salaryRanges: [], //Default empty array
               growthRate: 0, //Default value
-              demandLevel: "Medium", // Default value
+              demandLevel: "MEDIUM", // Default value
               topSkills: [], //Default empty array
-              MarketOutlook: "Neutral", //Default value
-              KeyTrends: [], //Default empty array
+              marketOutlook: "NEUTRAL", //Default value
+              keyTrends: [], //Default empty array
               recommendedSkills: [], //Default empty array
               nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
             },
@@ -62,10 +63,11 @@ export async function updateUser(data) {
         timeout: 10000,
       }
     );
-    return result.user;
+    revalidatePath("/");
+    return { success: true, ...result };
   } catch (error) {
     console.log("Error updating user and industry", error.message);
-    throw new Error("Failed to update profile");
+    throw new Error("Failed to update profile" + error.message);
   }
 }
 
@@ -98,6 +100,6 @@ export async function getUserOnboardingStatus() {
     };
   } catch (error) {
     console.error("Erro checking onboarding status", error.message);
-    throw new Error("Failed to check onboarding status");
+    throw new Error("Failed to check onboarding status" + error.message);
   }
 }

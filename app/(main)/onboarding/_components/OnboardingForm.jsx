@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -27,6 +27,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import useFetch from "@/hooks/use-fetch";
 import { updateUser } from "@/actions/user";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const OnboardingForm = ({ industries }) => {
   const [SelectIndustry, setSelectIndustry] = useState(null);
@@ -49,9 +51,22 @@ const OnboardingForm = ({ industries }) => {
   });
   const onSubmit = async (values) => {
     try {
-      console.log(values);
-    } catch (error) {}
+      const formattedIndustry = ` ${values.industry}-${values.subIndustry
+        .toLowerCase()
+        .replace(/ /g, "-")}`;
+      await updateUserFn({ ...values, industry: formattedIndustry });
+    } catch (error) {
+      console.error("Onboarding Error", error);
+    }
   };
+
+  useEffect(() => {
+    if (updateResult?.success && !updateLoading) {
+      toast.success("Profile Updated Successfully");
+      router.push("/dashboard");
+      router.refresh();
+    }
+  }, [updateResult, updateLoading]);
 
   const watchIndustry = watch("industry");
   return (
@@ -103,13 +118,13 @@ const OnboardingForm = ({ industries }) => {
                 <Select
                   onValueChange={(value) => {
                     setValue("subIndustry", value);
-                    setSelectIndustry(
-                      industries.find((ind) => ind.id === value)
-                    );
-                    setValue("subIndustry", "");
+                    // setSelectIndustry(
+                    //   industries.find((ind) => ind.id === value)
+                    // );
+                    // setValue("subIndustry", "");
                   }}
                 >
-                  <SelectTrigger id="industry">
+                  <SelectTrigger id="subIndustry">
                     <SelectValue placeholder="Select an Industry" />
                   </SelectTrigger>
                   <SelectContent>
@@ -177,8 +192,15 @@ const OnboardingForm = ({ industries }) => {
                 <p className="text-sm text-red-500">{errors.skills.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full">
-              Complete Profile
+            <Button type="submit" className="w-full" disabled={updateLoading}>
+              {updateLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Complete Profile"
+              )}
             </Button>
           </form>
         </CardContent>
