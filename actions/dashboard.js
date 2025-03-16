@@ -50,22 +50,25 @@ export async function getIndustryInsight() {
     where: {
       clerkUserId: userId,
     },
+    include: {
+      industryInsight: true,
+    },
   });
 
   if (!user) throw new Error("User not found");
 
   // check if user has industry insight filled out
-  if (!user.industrInsight) {
+  if (!user.industryInsight) {
     const insights = await generateAIInsights(user.industry);
 
-    const industryInsight = await db.industryInsight.crate({
+    const industryInsight = await db.industryInsight.create({
       data: {
         industry: user.industry,
         ...insights,
         nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
     });
-    return industrInsight;
+    return industryInsight;
   }
-  return user.industrInsight;
+  return user.industryInsight;
 }
