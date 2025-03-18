@@ -12,7 +12,6 @@ export async function generateQuiz() {
   // check if user i slogged in or not
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
-  s;
 
   const user = await db.user.findUnique({
     where: {
@@ -47,21 +46,21 @@ export async function generateQuiz() {
     const result = await model.generateContent(prompt);
     const response = result.response;
     const text = response.text();
+
     const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
     const quiz = JSON.parse(cleanedText);
 
-    return quiz.qustions;
+    return quiz.questions;
   } catch (error) {
     console.error("Error generating quiz", error);
     throw new Error("Failed to generate quiz questions");
   }
 }
 
-export async function saveQuizResults(questions, answers, score) {
+export async function saveQuizResult(questions, answers, score) {
   // check if user i slogged in or not
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
-  s;
 
   const user = await db.user.findUnique({
     where: {
@@ -80,7 +79,7 @@ export async function saveQuizResults(questions, answers, score) {
   }));
 
   // check for wrong answers
-  const wrongAnswers = questionResults.filter((q, !q.isCorrect));
+  const wrongAnswers = questionResults.filter((q) => !q.isCorrect);
 
   // if answered wrong, generate improvement tips for wrong answers
   let improvementTip = null;
@@ -106,7 +105,7 @@ export async function saveQuizResults(questions, answers, score) {
     }
   }
   try {
-    const assesment = await db.assesment.create({
+    const assessment = await db.assessment.create({
       data: {
         userId: user.id,
         quizScore: score,
@@ -115,7 +114,7 @@ export async function saveQuizResults(questions, answers, score) {
         improvementTip,
       },
     });
-    return assesment;
+    return assessment;
   } catch (error) {
     console.error("Error saving quiz results", error);
     throw new Error("Failed to save quiz results");
