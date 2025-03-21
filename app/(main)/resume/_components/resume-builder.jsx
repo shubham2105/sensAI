@@ -109,7 +109,7 @@ const ResumeBuilder = ({ initialContent }) => {
     if (saveError) {
       toast.error(saveError.message || "Failed to save resume");
     }
-  });
+  }, [saveResult, saveError, isSaving]);
   const onSubmit = async () => {
     try {
       await saveResultFn(previewContent);
@@ -149,7 +149,11 @@ const ResumeBuilder = ({ initialContent }) => {
           Resume Builder
         </h1>
         <div className="space-x-2">
-          <Button variant="destructive" onClick={onSubmit} disabled={isSaving}>
+          <Button
+            variant="destructive"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSaving}
+          >
             {isSaving ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -257,7 +261,7 @@ const ResumeBuilder = ({ initialContent }) => {
                   <Textarea
                     {...field}
                     className="h-32"
-                    placeholder="write a compelling ptofessional sumamry"
+                    placeholder="write a compelling professional sumamry"
                     error={errors.summary}
                   />
                 )}
