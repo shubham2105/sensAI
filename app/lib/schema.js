@@ -30,7 +30,7 @@ export const onboardingSchema = z.object({
 // Schema for Resume Building
 export const contactSchema = z.object({
   email: z.string().email("Invalid email address"),
-  mobile: z.number().optional(),
+  mobile: z.string().optional(),
   linkedin: z.string().optional(),
   twitter: z.string().optional(),
 });
