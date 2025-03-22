@@ -81,6 +81,7 @@ const ResumeBuilder = ({ initialContent }) => {
     if (contactInfo.linkedin)
       parts.push(`💼[LinkedIn] (${contactInfo.linkedin})`);
     if (contactInfo.twitter) parts.push(`🐥 [Twitter](${contactInfo.twitter})`);
+    if (contactInfo.github) parts.push(`💻 [Github](${contactInfo.github})`);
 
     return parts.length > 0
       ? `## <div align ="center">${user.fullName}</div>
@@ -193,6 +194,7 @@ const ResumeBuilder = ({ initialContent }) => {
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Contact Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
+                {/* Email */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Email</label>
                   <Input
@@ -207,7 +209,7 @@ const ResumeBuilder = ({ initialContent }) => {
                     </p>
                   )}
                 </div>
-
+                {/* Mobile */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Mobile Number</label>
                   <Input
@@ -221,7 +223,7 @@ const ResumeBuilder = ({ initialContent }) => {
                     </p>
                   )}
                 </div>
-
+                {/* Linkedin */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Linkedin URL</label>
                   <Input
@@ -235,7 +237,22 @@ const ResumeBuilder = ({ initialContent }) => {
                     </p>
                   )}
                 </div>
-
+                {/* Github */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Github Profile</label>
+                  <Input
+                    {...register("contactInfo.github")}
+                    type="url"
+                    placeholder="https://github.com/yourusername"
+                    error={errors.contactInfo?.github}
+                  />
+                  {errors.contactInfo?.github && (
+                    <p className="text-sm text-red-500">
+                      {errors.contactInfo.github?.message}
+                    </p>
+                  )}
+                </div>
+                {/* Twitter */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Twitter Profile</label>
                   <Input
