@@ -24,7 +24,8 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
             {/* header */}
-            <Header></Header>
+            <Header />
+
             <main className="min-h-screen">{children}</main>
             <Toaster richColors />
             {/* footer */}
